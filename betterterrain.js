@@ -38,6 +38,7 @@ U;betterterrain.rawnoise=E})();
     }
     
     betterterrain.createterrain.prototype.generateheightmap = function(x, y) {
+        betterterrain.createterrain.prototype._initxy(x, y);
         var height = 1 * noise(1 * nx, 1 * ny) +  0.5 * noise(2 * nx, 2 * ny) + 0.25 * noise(4 * nx, 4 * ny);
         this.dataarray[betterterrain.getindex(x, y)].h = height;
         return height;
