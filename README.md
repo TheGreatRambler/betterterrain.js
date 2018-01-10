@@ -1,5 +1,5 @@
 # betterterrain.js
-The better terrain algorithm for javascript
+The better terrain algorithm for javascript. Our perk? The terrain generates infinitely, yet it is just as detailed as terrain made with midpoint displacement!
 Uses [@jwagner simplex-noise.js](https://github.com/josephg/noisejs) which is itself based upon Stefan Gustavson's implementation. (Note: uses typed arrays)
 
 ![Demo screenshot](screenshotV1.png)
