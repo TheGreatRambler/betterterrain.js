@@ -28,48 +28,64 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         if (typeof options === "undefined") {
             options = {};
         }
+        
         if (typeof options.seed === "undefined") {
             // seed is a number
             options.seed = Math.random();
         }
+        
         if (typeof options.freq === "undefined") {
             options.freq = 10;
         }
-        if (typeof options.defaultcolor === "undefined") {
-            options.defaultcolor = "#FFFFFF";
-        }
+        
         if (typeof options.defaultbiomechance === "undefined") {
             options.defaultbiomechance = 80;
         }
+        
         if (typeof options.biomes === "undefined") {
             options.onlyheight = true;
         }
+        
         if (typeof options.onlyheight === "undefined") {
             options.onlyheight = false;
         }
+        
         if (typeof options.biomemap === "undefined") {
             options.onlyheight = true;
         }
+        
         if (typeof options.initialripple === "undefined") {
             options.initialripple = 1;
         }
+        
         if (typeof options.continentmult === "undefined") {
             options.continentmult = 2;
         }
+        
         if (typeof options.continentfreq === "undefined") {
             options.continentfreq = 10;
         }
+        
         if (typeof options.moisturefreq === "undefined") {
             options.moisturefreq = 2;
         }
+        
         if (typeof options.exponent === "undefined") {
             options.exponent = 2;
         }
+        
         if (typeof options.invert === "undefined") {
             options.invert = true;
         }
+        
         if (typeof options.moistureweight === "undefined") {
             options.moistureweight = 1;
+        }
+        
+        if (typeof options.structures === "undefined") {
+            options.structuresgen = false;
+        } else {
+            options.structuresgen = true;
         }
 
         this.rng = new betterterrainhf.alea(options.seed);
@@ -81,6 +97,17 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         this.dataarray = [];
         this.options = options;
     }
+
+    betterterrainhf.getindex = function(x, y) {
+        // Elegant Pairing Function (Szudzik)
+        var xx = x >= 0 ? x * 2 : x * -2 - 1;
+        var yy = y >= 0 ? y * 2 : y * -2 - 1;
+        return (xx >= yy) ? (xx * xx + xx + yy) : (yy * yy + xx);
+    };
+    
+    betterterrainhf.getrandomnumber = function(min, max, randnum) {
+        return Math.floor(randnum * (max - min + 1)) + min;
+    };
     
     betterterrain.prototype.getchancefunc = function(x, y) {
         var specificnum = betterterrainhf.getindex(x, y);
@@ -89,15 +116,35 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         return randnumgen.next;
     }
 
-    betterterrainhf.getindex = function(x, y) {
-        // Elegant Pairing Function (Szudzik)
-        var xx = x >= 0 ? x * 2 : x * -2 - 1;
-        var yy = y >= 0 ? y * 2 : y * -2 - 1;
-        return (xx >= yy) ? (xx * xx + xx + yy) : (yy * yy + xx);
+    betterterrain.prototype._initxy = function(x, y) {
+        if (typeof this.dataarray[betterterrainhf.getindex(x, y)] === "undefined") {
+            this.dataarray[betterterrainhf.getindex(x, y)] = {};
+        }
     };
-
-    betterterrain.prototype.initxy = function(x, y) {
-        this.dataarray[betterterrainhf.getindex(x, y)] = {};
+    
+    betterterrain.prototype.generatestructures = function(x, y) {
+        if (typeof this.dataarray[betterterrainhf.getindex(x, y)].s === "undefined") {
+            var biomedata = this.options.biomes[this.dataarray[betterterrainhf.getindex(x, y)].b];
+            if (typeof biomedata.structures !== "undefined") {
+                var chancefunction = this.getchancefunc(x, y);
+                var choiceitemindex = betterterrainhf.getrandomnumber(0, biomedata.structures.length - 1, chancefunction());
+                var chosenstructure = biomedata.structures[choiceitemindex];
+                if (chancefunction() < (chosenstructure.chance / 100) * biomedata.structures.length) {
+                    var data = this.options.structures[chosenstructure.name].data();
+                    var width = data[0].length;
+                    var height = data.length;
+                    for (var f = 0; f < width; f++) {
+                        for (var p = 0; p < height; p++) {
+                            this._initxy(x + f, y + p);
+                            if (typeof this.dataarray[betterterrainhf.getindex(x + f, y + p)].i === "undefined") {
+                                this.dataarray[betterterrainhf.getindex(x + f, y + p)].i = data[p][f];
+                                this.dataarray[betterterrainhf.getindex(x + f, y + p)].s = chosenstructure.name;
+                            }
+                        }
+                    }
+                }
+            }
+        }
     };
 
     betterterrain.prototype.generatebiomes = function(x, y) {
@@ -122,11 +169,6 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
                         }
                     }
                 }
-                if (typeof this.options.biomes[chosentile].color !== "undefined") {
-                    this.dataarray[betterterrainhf.getindex(x, y)].c = this.options.biomes[chosentile].color;
-                } else {
-                    this.dataarray[betterterrainhf.getindex(x, y)].c = this.options.defaultcolor;
-                }
             }
             
             this.dataarray[betterterrainhf.getindex(x, y)].b = chosentile;
@@ -140,9 +182,9 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
             var moistureoctave1 = this.terrainnoise.noise2D(x / frequency, y / frequency);
             var moistureoctave2 = 0.5 * this.terrainnoise.noise2D(2 * x / frequency, 2 * y / frequency);
             var moistureoctave3 = 0.25 * this.terrainnoise.noise2D(4 * x / frequency, 4 * y / frequency);
-            var moistureresult = (moistureoctave1 + moistureoctave2 + moistureoctave3) * this.options.moistureweight / this.getprobablemoisture();
+            var moistureresult = (moistureoctave1 + moistureoctave2 + moistureoctave3) * this.options.moistureweight;
             
-            this.dataarray[betterterrainhf.getindex(x, y)].m = moistureresult;
+            this.dataarray[betterterrainhf.getindex(x, y)].m = moistureresult / this.getprobablemoisture();
         }
     };
 
@@ -185,14 +227,21 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         var moisture1 = 1.75 * this.options.moistureweight;
         return moisture1;
     };
-
-    betterterrain.prototype.getdata = function(x, y) {
-        this.initxy(x, y);
+    
+    betterterrain.prototype.setdata = function(x, y) {
+        this._initxy(x, y);
         this.generateheightmap(x, y);
         if (!this.options.onlyheight) {
             this.generatemoisture(x, y);
             this.generatebiomes(x, y);
+            if (this.options.structuresgen) {
+                this.generatestructures(x, y);
+            }
         }
+    }
+
+    betterterrain.prototype.getdata = function(x, y) {
+        this.setdata(x, y);
         var result = this.dataarray[betterterrainhf.getindex(x, y)];
         return result;
     };
