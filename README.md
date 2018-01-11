@@ -139,11 +139,11 @@ var y = 6; // anything you want
 console.log(terrain.getdata(x, y));
 /*
 {
-	h: 0.45638263857, // height
-    m: -0.2648298765, // moisture
-    b: "J",			  // biome name
-    i: "F",			  // name of item produced by structure, if applicable
-    s: "house"		  // name of structure returned, if applicable
+    h: 0.45638263857,       // height
+    m: -0.2648298765,       // moisture
+    b: "J",		    // biome name
+    i: "F",	       	    // name of item produced by structure, if applicable
+    s: "house"		    // name of structure returned, if applicable
 }
 */
 ```
