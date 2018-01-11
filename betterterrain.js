@@ -87,6 +87,18 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         } else {
             options.structuresgen = true;
         }
+        
+        if (typeof options.chunksize === "undefined") {
+            options.chunksize = 32;
+        }
+        
+        if (typeof options.defaultstucturesoverlap === "undefined") {
+            options.defaultstucturesoverlap = false;
+        }
+        
+        if (typeof options.defaultrequireddistanceseparated === "undefined") {
+            options.defaultrequireddistanceseparated = 0;
+        }
 
         this.rng = new betterterrainhf.alea(options.seed);
 
@@ -95,6 +107,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         this.continentnoise = new betterterrainhf.rawnoise((new betterterrainhf.alea(this.rng.next())).next);
         this.moisturenoise = new betterterrainhf.rawnoise((new betterterrainhf.alea(this.rng.next())).next);
         this.dataarray = [];
+        this.chunkexists = [];
         this.options = options;
     }
 
@@ -105,13 +118,27 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         return (xx >= yy) ? (xx * xx + xx + yy) : (yy * yy + xx);
     };
     
+    betterterrainhf.unpair = function(z) {
+        // Elegant Pairing Function (Szudzik)
+        var sqrtz = Math.floor(Math.sqrt(z));
+        var sqz = sqrtz * sqrtz;
+        var result1 = ((z - sqz) >= sqrtz) ? [sqrtz, z - sqz - sqrtz] : [z - sqz, sqrtz];
+        var xx = result1[0] % 2 === 0 ? result1[0] / 2 : ((result1[0] + 1) / 2) * -1;
+        var yy = result1[1] % 2 === 0 ? result1[1] / 2 : ((result1[1] + 1) / 2) * -1;
+        return [xx, yy];
+    };
+    
     betterterrainhf.getrandomnumber = function(min, max, randnum) {
         return Math.floor(randnum * (max - min + 1)) + min;
     };
     
-    betterterrain.prototype.getchancefunc = function(x, y) {
+    betterterrain.prototype.getchancefunc = function(x, y, specialadd) {
+        var specialnum = 0;
+        if (typeof specialadd !== "undefined") {
+            specialnum = specialadd;
+        }
         var specificnum = betterterrainhf.getindex(x, y);
-        var seedchoice = (specificnum + this.options.seed) / 1000000;
+        var seedchoice = (specificnum + this.options.seed + specialnum) / 1000000;
         var randnumgen = new betterterrainhf.alea(seedchoice);
         return randnumgen.next;
     }
@@ -126,19 +153,52 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         if (typeof this.dataarray[betterterrainhf.getindex(x, y)].s === "undefined") {
             var biomedata = this.options.biomes[this.dataarray[betterterrainhf.getindex(x, y)].b];
             if (typeof biomedata.structures !== "undefined") {
-                var chancefunction = this.getchancefunc(x, y);
+                var chancefunction = this.getchancefunc(x, y, 2);
                 var choiceitemindex = betterterrainhf.getrandomnumber(0, biomedata.structures.length - 1, chancefunction());
                 var chosenstructure = biomedata.structures[choiceitemindex];
-                if (chancefunction() < (chosenstructure.chance / 100) * biomedata.structures.length) {
-                    var data = this.options.structures[chosenstructure.name].data();
+                if (chosenstructure.chance !== 0 || chosenstructure.chance === 100 || chancefunction() <= (chosenstructure.chance / 100) * biomedata.structures.length) {
+                    var structuredata = this.options.structures[chosenstructure.name];
+                    var data = Object.prototype.toString.call(structuredata.data) === '[object Function]' ? structuredata.data({x: x, y: y, c: (new betterterrainhf.alea(chancefunction())).next}) : structuredata.data;
                     var width = data[0].length;
                     var height = data.length;
-                    for (var f = 0; f < width; f++) {
-                        for (var p = 0; p < height; p++) {
-                            this._initxy(x + f, y + p);
-                            if (typeof this.dataarray[betterterrainhf.getindex(x + f, y + p)].i === "undefined") {
-                                this.dataarray[betterterrainhf.getindex(x + f, y + p)].i = data[p][f];
-                                this.dataarray[betterterrainhf.getindex(x + f, y + p)].s = chosenstructure.name;
+                    var chunkoutercoordinates = this.getchunkcoordinates(this.getchunkid(x + this.options.chunksize, y + this.options.chunksize));
+                    if (x + width <= chunkoutercoordinates[0] && y + height <= chunkoutercoordinates[1]) {
+                        if ((typeof structuredata.allowedoverlap !== "undefined") ? structuredata.allowedoverlap : this.options.defaultstucturesoverlap) {
+                            for (var f = 0; f < width; f++) {
+                                for (var p = 0; p < height; p++) {
+                                    var xval = x + f;
+                                    var yval = y + p;
+                                    this._initxy(xval, yval);
+                                    this.dataarray[betterterrainhf.getindex(xval, yval)].i = data[p][f];
+                                    this.dataarray[betterterrainhf.getindex(xval, yval)].s = chosenstructure.name;
+                                }
+                            }
+                        } else {
+                            var createstruct = true;
+                            var border = (typeof structuredata.requireddistance !== "undefined") ? structuredata.requireddistance : this.options.defaultrequireddistanceseparated;
+                            for (var f = 0 - border; f < width + border; f++) {
+                                for (var p = 0 - border; p < height + border; p++) {
+                                    var xval = x + f;
+                                    var yval = y + p;
+                                    if (!this.dataarray[betterterrainhf.getindex(xval, yval)]) {
+                                        this._initxy(xval, yval);
+                                    }
+                                    if (!this.dataarray[betterterrainhf.getindex(xval, yval)] || this.dataarray[betterterrainhf.getindex(xval, yval)].i) {
+                                        createstruct = false;
+                                    }
+                                }
+                            }
+                            if (createstruct) {
+                                for (var f = 0; f < width; f++) {
+                                    for (var p = 0; p < height; p++) {
+                                        var xval = x + f;
+                                        var yval = y + p;
+                                        if (data[p][f]) {
+                                            this.dataarray[betterterrainhf.getindex(xval, yval)].i = data[p][f];
+                                        }
+                                        this.dataarray[betterterrainhf.getindex(xval, yval)].s = chosenstructure.name;
+                                    }
+                                }
                             }
                         }
                     }
@@ -158,7 +218,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
             var chosentile = this.options.biomemap[yindex][xindex];
             if (typeof this.options.biomes[chosentile] !== "undefined") {
                 if (typeof this.options.biomes[chosentile].childtiles !== "undefined") {
-                    var chancefunc = this.getchancefunc(x, y);
+                    var chancefunc = this.getchancefunc(x, y, 1);
                     var tile = this.options.biomes[chosentile].childtiles;
                     for (var f = 0; f < tile.length; f++) {
                         var result = tile[f].chance / 100;
@@ -211,6 +271,28 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         }
     };
     
+    betterterrain.prototype.getchunkid = function(x, y) {
+        var chunkx = Math.floor(x / this.options.chunksize);
+        var chunky = Math.floor(y / this.options.chunksize);
+        var chunkid = betterterrainhf.getindex(chunkx, chunky);
+        return chunkid;
+    };
+    
+    betterterrain.prototype.chunkexistshere = function(x, y) {
+        if (this.chunkexists[this.getchunkid(x, y)]) {
+            return true;
+        } else {
+            return false;
+        }
+    };
+    
+    betterterrain.prototype.getchunkcoordinates = function(chunkid) {
+        var vals = betterterrainhf.unpair(chunkid);
+        var x = vals[0] * this.options.chunksize;
+        var y = vals[1] * this.options.chunksize;
+        return [x, y];
+    };
+    
     betterterrain.prototype.getmaxheight = function() {
         var height1 = 1.75 * this.options.initialripple;
         var height2 = 1.75 * this.options.continentmult;
@@ -241,7 +323,15 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
     }
 
     betterterrain.prototype.getdata = function(x, y) {
-        this.setdata(x, y);
+        if (!this.chunkexistshere(x, y)) {
+            var startcoordinates = this.getchunkcoordinates(this.getchunkid(x, y));
+            for (var g = 0; g < this.options.chunksize; g++) {
+                for (var w = 0; w < this.options.chunksize; w++) {
+                    this.setdata(startcoordinates[0] + g, startcoordinates[1] + w);
+                }
+            }
+            this.chunkexists[this.getchunkid(x, y)] = true;
+        }
         var result = this.dataarray[betterterrainhf.getindex(x, y)];
         return result;
     };
