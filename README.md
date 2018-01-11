@@ -3,6 +3,7 @@ The better terrain algorithm for javascript. Our perk? The terrain generates inf
 Uses [@jwagner simplex-noise.js](https://github.com/josephg/noisejs) which is itself based upon Stefan Gustavson's implementation. (Note: uses typed arrays)
 
 ![Demo screenshot](screenshotV1.png)
+![Chunk screenshot](screenshotchunks.png)
 
 ## API coming soon
 
