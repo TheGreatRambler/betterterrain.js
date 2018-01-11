@@ -97,9 +97,6 @@ options.biomemap = [
             ["X", "X", "X", "X", "X", "X"],
             ["X", "X", "X", "X", "X", "X"]  // <--- -1
         ];
-        	^			  ^				 ^
-            |			  |				 |
-           -1			  0				 1
 ```
 This determines the creation of biomes. The `x` axis is moisture, the `y` axis is height. Notice these letters correspond to the `biomes` properties above. When these biomes are generated, the terrain generator will check to see if the item is available in the biomes option. If it is, then the events explained above will occur for that tile. If it is not, then nothing will happen.
 
