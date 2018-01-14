@@ -145,3 +145,6 @@ console.log(terrain.getdata(x, y));
 */
 ```
 This method returns a object of data created by the terrain generator.
+
+#### Note
+there are no plans to include erosion in this library because it would make it __way too slow!__ If you really want this feature added, start a pull request and I'll try it!
