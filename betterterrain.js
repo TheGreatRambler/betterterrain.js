@@ -1,3 +1,15 @@
+/*
+ *     A           .____________________.
+ *    / \  A       |                    |
+ *   / A \/ \  A   |  BETTERTERRAIN.JS  |
+ *  / / \/   \/ \  |____________________|
+ * / /   \    \  \   |                |
+ *
+ * COPYRIGHT BY THEGREATRAMBLER
+ * MIT LICENSE
+ *
+ */
+
 (function(root, factory) {
     if (typeof define === 'function' && define.amd) {
         define([], factory);
@@ -30,12 +42,11 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         }
         
         if (typeof options.seed === "undefined") {
-            // seed is a number
             options.seed = Math.random();
         }
         
         if (typeof options.freq === "undefined") {
-            options.freq = 10;
+            options.freq = 50;
         }
         
         if (typeof options.defaultbiomechance === "undefined") {
@@ -43,7 +54,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         }
         
         if (typeof options.biomes === "undefined") {
-            options.onlyheight = true;
+            options.biomes = {};
         }
         
         if (typeof options.onlyheight === "undefined") {
@@ -99,6 +110,12 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         if (typeof options.defaultrequireddistanceseparated === "undefined") {
             options.defaultrequireddistanceseparated = 0;
         }
+        
+        if (typeof options.specialstructs === "undefined") {
+            options.createspecialstructs = false;
+        } else {
+            options.createspecialstructs = true;
+        }
 
         this.rng = new betterterrainhf.alea(options.seed);
 
@@ -108,7 +125,13 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         this.moisturenoise = new betterterrainhf.rawnoise((new betterterrainhf.alea(this.rng.next())).next);
         this.dataarray = [];
         this.chunkexists = [];
+        this.visitedriverchunks = [];
+        
         this.options = options;
+        
+        if (options.createspecialstructs) {
+            this.createspecialstructs();
+        }
     }
 
     betterterrainhf.getindex = function(x, y) {
@@ -149,6 +172,25 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         }
     };
     
+    betterterrain.prototype.createspecialstructs = function() {
+        var that = this;
+        this.options.specialstructs.forEach(function(item) {
+            var chancefunction = that.getchancefunc(item.x, item.y, 3);
+            var data = Object.prototype.toString.call(that.options.structures[item.name].data) === '[object Function]' ? that.options.structures[item.name].data({x: item.x, y: item.y, c: (new betterterrainhf.alea(chancefunction())).next}) : that.options.structures[item.name].data;
+            var width = data[0].length;
+            var height = data.length;
+            for (var f = 0; f < width; f++) {
+                for (var p = 0; p < height; p++) {
+                    var xval = item.x + f;
+                    var yval = item.y + p;
+                    that._initxy(xval, yval);
+                    that.dataarray[betterterrainhf.getindex(xval, yval)].i = data[p][f];
+                    that.dataarray[betterterrainhf.getindex(xval, yval)].s = item.name;
+                }
+            }
+        });
+    }
+    
     betterterrain.prototype.generatestructures = function(x, y) {
         if (typeof this.dataarray[betterterrainhf.getindex(x, y)].s === "undefined") {
             var biomedata = this.options.biomes[this.dataarray[betterterrainhf.getindex(x, y)].b];
@@ -156,7 +198,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
                 var chancefunction = this.getchancefunc(x, y, 2);
                 var choiceitemindex = betterterrainhf.getrandomnumber(0, biomedata.structures.length - 1, chancefunction());
                 var chosenstructure = biomedata.structures[choiceitemindex];
-                if (chosenstructure.chance !== 0 || chosenstructure.chance === 100 || chancefunction() <= (chosenstructure.chance / 100) * biomedata.structures.length) {
+                if (chosenstructure.chance === 100 || chancefunction() <= (chosenstructure.chance / 100) * biomedata.structures.length) {
                     var structuredata = this.options.structures[chosenstructure.name];
                     var data = Object.prototype.toString.call(structuredata.data) === '[object Function]' ? structuredata.data({x: x, y: y, c: (new betterterrainhf.alea(chancefunction())).next}) : structuredata.data;
                     var width = data[0].length;
