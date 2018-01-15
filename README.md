@@ -158,7 +158,7 @@ Quite a few mathematical methods used to create the terrain.
 
 ### Methods
 
-#### Getdata
+#### getdata
 
 ```javascript
 var terrain = new betterterrain();
@@ -176,6 +176,51 @@ console.log(terrain.getdata(x, y));
 */
 ```
 This method returns a object of data created by the terrain generator.
+
+#### getchunkid
+
+```javascript
+var terrain = new betterterrain();
+var x = 300; // anything you want
+var y = 663; // anything you want
+console.log(terrain.getchunkid(x, y)); // 23
+```
+
+This method returns the id of the chunk associated with the location. Note, this number depends upon the chunksize.
+
+#### chunkexistshere
+
+```javascript
+var terrain = new betterterrain();
+var x = 300; // anything you want
+var y = 663; // anything you want
+console.log(terrain.chunkexistshere(x, y)); // true
+```
+
+This method returns whether a given chunk at this location is loaded.
+
+
+#### getchunkcoordinates
+
+```javascript
+var terrain = new betterterrain();
+var id = 23;
+console.log(terrain.getchunkcoordinates(id)); // [290, 650]
+```
+
+This method returns the coordinates of the top left corner of the given chunk.
+
+
+#### getchancefunc
+
+```javascript
+var terrain = new betterterrain();
+var x = 300; // anything you want
+var y = 663; // anything you want
+console.log(terrain.getchancefunc(x, y)); // function () {...}
+```
+
+This method returns a function that retruns random numbers specially suited for that location. in other words, it returns random numbers based upon the world seed.
 
 #### Note
 there are no plans to include erosion in this library because it would make it __way too slow!__ If you really want this feature added, start a pull request and I'll try it!
