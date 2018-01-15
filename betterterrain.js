@@ -5,7 +5,7 @@
  *  / / \/   \/ \  |____________________|
  * / /   \    \  \   |                |
  *
- * COPYRIGHT BY THEGREATRAMBLER
+ * COPYRIGHT 2018 BY THEGREATRAMBLER
  * MIT LICENSE
  *
  */
