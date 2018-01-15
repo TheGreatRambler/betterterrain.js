@@ -1,6 +1,6 @@
 # betterterrain.js
 The better terrain algorithm for javascript. What's the perk? The terrain generates infinitely, yet it is just as detailed as terrain made with midpoint displacement! In addition, it also generates structures, like houses!
-Uses [@jwagner simplex-noise.js](https://github.com/josephg/noisejs) which is itself based upon Stefan Gustavson's implementation. (Note: uses typed arrays)
+Uses [@jwagner simplex-noise.js](https://github.com/jwagner/simplex-noise.js/) which is itself based upon Stefan Gustavson's implementation. (Note: uses typed arrays)
 
 ![Demo screenshot](screenshotV1.png)
 ![Chunk screenshot](screenshotchunks.png)
@@ -142,6 +142,19 @@ var data = [
  * \/
  */
 ```
+
+#### Some math stuff...
+
+```javascript
+options.initialripple = 1;
+options.continentmult = 2;
+options.continentfreq = 10;
+options.moisturefreq = 2;
+options.exponent = 2;
+options.moistureweight = 1;
+options.invert = true;
+```
+Quite a few mathematical methods used to create the terrain.
 
 ### Methods
 
