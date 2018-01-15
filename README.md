@@ -123,7 +123,25 @@ options.structures = {
 }
 ```
 
-The structures to be passed and generated. The name of the structure is the first property. `data` is the function to be called when the structure will be generated. It can either be a function or an array. `requireddistance` is the required distance from another structure must be (in units). `allowedoverlap` defines whether the structure can overlap on top of other structures. `requireddistance` is only called when this option is `false`. The array of arrays the function produces is the shape of the structure. The elements of the array are the names of the items. If the structure is not a rectangle, just set the unused values of the structure to `undefined`, `false`, `0`, or `null`. The shape of the `data` must always be a rectangular array of arrays.
+The structures to be passed and generated. The name of the structure is the first property. `data` is the function to be called when the structure will be generated. It can either be a function or an array. `requireddistance` is the required distance from another structure must be (in units). `allowedoverlap` defines whether the structure can overlap on top of other structures. `requireddistance` is only called when this option is `false`. The array of arrays the function produces is the shape of the structure. The elements of the array are the names of the items. If the structure is not a rectangle, just set the unused values of the structure to `undefined`, `false`, `0`, or `null`. The shape of the `data` must always be a rectangular array of arrays. For instance:
+
+```javascript
+var data = [
+        [0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, "G", 0, 0, 0],
+        [0, 0, "G", "G", "G", 0, 0],
+        [0, "G", "G", "G", "G", "G", 0],
+        [0, 0, "G", "G", "G", 0, 0],
+        [0, 0, 0, "G", 0, 0, 0],
+	[0, 0, 0, 0, 0, 0, 0]
+];
+
+/*
+ * Looks like this:
+ * /\
+ * \/
+ */
+```
 
 ### Methods
 
