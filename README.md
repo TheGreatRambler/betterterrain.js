@@ -32,7 +32,7 @@ Change chunksize. Chunksize is used to generate structures, so the size of the c
 
 ```javascript
 options.biomes = {
-	W: {
+    W: {
     	name: "water",
         color: "#4286f4"
     },
