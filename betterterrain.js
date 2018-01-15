@@ -49,10 +49,6 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
             options.freq = 50;
         }
         
-        if (typeof options.defaultbiomechance === "undefined") {
-            options.defaultbiomechance = 80;
-        }
-        
         if (typeof options.biomes === "undefined") {
             options.biomes = {};
         }
@@ -176,7 +172,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         var that = this;
         this.options.specialstructs.forEach(function(item) {
             var chancefunction = that.getchancefunc(item.x, item.y, 3);
-            var data = Object.prototype.toString.call(that.options.structures[item.name].data) === '[object Function]' ? that.options.structures[item.name].data({x: item.x, y: item.y, c: (new betterterrainhf.alea(chancefunction())).next}) : that.options.structures[item.name].data;
+            var data = Object.prototype.toString.call(that.options.structures[item.name].data) === '[object Function]' ? that.options.structures[item.name].data({x: item.x, y: item.y}) : that.options.structures[item.name].data;
             var width = data[0].length;
             var height = data.length;
             for (var f = 0; f < width; f++) {
@@ -200,7 +196,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
                 var chosenstructure = biomedata.structures[choiceitemindex];
                 if (chosenstructure.chance === 100 || chancefunction() <= (chosenstructure.chance / 100) * biomedata.structures.length) {
                     var structuredata = this.options.structures[chosenstructure.name];
-                    var data = Object.prototype.toString.call(structuredata.data) === '[object Function]' ? structuredata.data({x: x, y: y, c: (new betterterrainhf.alea(chancefunction())).next}) : structuredata.data;
+                    var data = Object.prototype.toString.call(structuredata.data) === '[object Function]' ? structuredata.data({x: x, y: y}) : structuredata.data;
                     var width = data[0].length;
                     var height = data.length;
                     var chunkoutercoordinates = this.getchunkcoordinates(this.getchunkid(x + this.options.chunksize, y + this.options.chunksize));
