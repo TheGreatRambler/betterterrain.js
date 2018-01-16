@@ -107,6 +107,10 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
             options.defaultrequireddistanceseparated = 0;
         }
         
+        if (typeof options.clearmemoryamount === "undefined") {
+            options.clearmemoryamount = 50000;
+        }
+        
         if (typeof options.specialstructs === "undefined") {
             options.createspecialstructs = false;
         } else {
@@ -121,7 +125,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         this.moisturenoise = new betterterrainhf.rawnoise((new betterterrainhf.alea(this.rng.next())).next);
         this.dataarray = [];
         this.chunkexists = [];
-        this.visitedriverchunks = [];
+        this.numofelements = 0;
         
         this.options = options;
         
@@ -166,6 +170,12 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         if (typeof this.dataarray[betterterrainhf.getindex(x, y)] === "undefined") {
             this.dataarray[betterterrainhf.getindex(x, y)] = {};
         }
+    };
+    
+    betterterrain.prototype._reset = function() {
+        this.dataarray.length = 0;
+        this.chunkexists.length = 0;
+        this.numofelements = 0;
     };
     
     betterterrain.prototype.createspecialstructs = function() {
@@ -361,11 +371,16 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
     }
 
     betterterrain.prototype.getdata = function(x, y) {
+        if (this.numofelements > this.options.clearmemoryamount) {
+            this._reset();
+        }
+        
         if (!this.chunkexistshere(x, y)) {
             var startcoordinates = this.getchunkcoordinates(this.getchunkid(x, y));
             for (var g = 0; g < this.options.chunksize; g++) {
                 for (var w = 0; w < this.options.chunksize; w++) {
                     this.setdata(startcoordinates[0] + g, startcoordinates[1] + w);
+                    this.numofelements++;
                 }
             }
             this.chunkexists[this.getchunkid(x, y)] = true;
