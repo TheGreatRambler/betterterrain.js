@@ -1,6 +1,6 @@
 # betterterrain.js
 The better terrain algorithm for javascript. What's the perk? The terrain generates infinitely, yet it is just as detailed as terrain made with midpoint displacement! In addition, it also generates structures, like houses!
-Uses [@jwagner simplex-noise.js](https://github.com/jwagner/simplex-noise.js/) which is itself based upon Stefan Gustavson's implementation. (Note: uses typed arrays)
+Uses [@jwagner simplex-noise.js](https://github.com/jwagner/simplex-noise.js/) which is itself based upon Stefan Gustavson's implementation. Works in Node, AMD, and the browser.
 
 ![Demo screenshot](screenshotV1.png)
 ![Chunk screenshot](screenshotchunks.png)
@@ -230,4 +230,5 @@ console.log(terrain.getchancefunc(x, y)); // function () {...}
 This method returns a function that retruns random numbers specially suited for that location. in other words, it returns random numbers based upon the world seed.
 
 #### Note
-there are no plans to include erosion in this library because it would make it __way too slow!__ If you really want this feature added, start a pull request and I'll try it!
+* This library uses typed arrays!
+* There are no plans to include erosion in this library because it would make it __way too slow!__ If you really want this feature added, start a pull request and I'll try it!
