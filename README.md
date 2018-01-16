@@ -237,7 +237,7 @@ var y = 663; // anything you want
 console.log(terrain.getchancefunc(x, y)); // function () {...}
 ```
 
-This method returns a function that retruns random numbers specially suited for that location. in other words, it returns random numbers based upon the world seed.
+This method returns a function that returns random numbers specially suited for that location. in other words, it returns random numbers based upon the world seed.
 
 #### Note
 * This library uses typed arrays!
