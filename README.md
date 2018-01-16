@@ -74,6 +74,13 @@ options.onlyheight = false;
 ```
 Determines whether biomes will be generated as well. This options only produces a heightmap, not biomes. Only use this option if you are generating your own biomes or you don't have need for biomes.
 
+#### Clear memory amount
+
+```javascript
+options.clearmemoryamount = 10000;
+```
+Determines amount of elements before internal dataarray is emptied. Make it higher if you want more performance and you have more memory. Make it smaller if you are limited on memory and are okay with slower performance.
+
 #### Biome map
 
 ```javascript
