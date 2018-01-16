@@ -130,7 +130,17 @@ options.structures = {
 }
 ```
 
-The structures to be passed and generated. The name of the structure is the first property. `data` is the function to be called when the structure will be generated. It can either be a function or an array. `requireddistance` is the required distance from another structure must be (in units). `allowedoverlap` defines whether the structure can overlap on top of other structures. `requireddistance` is only called when this option is `false`. The array of arrays the function produces is the shape of the structure. The elements of the array are the names of the items. If the structure is not a rectangle, just set the unused values of the structure to `undefined`, `false`, `0`, or `null`. The shape of the `data` must always be a rectangular array of arrays. For instance:
+The structures to be passed and generated. The name of the structure is the first property. `data` is the function to be called when the structure will be generated. It can either be a function or an array. When called as a function, it is called with a object like the one below.
+
+```javascript
+environmentdata = {
+    x: 34,
+    y: 76
+};
+// It is passed an object containing the x and y of the top-left corner
+```
+
+`requireddistance` is the required distance from another structure must be (in units). `allowedoverlap` defines whether the structure can overlap on top of other structures. `requireddistance` is only called when this option is `false`. The array of arrays the function produces is the shape of the structure. The elements of the array are the names of the items. If the structure is not a rectangle, just set the unused values of the structure to `undefined`, `false`, `0`, or `null`. The shape of the `data` must always be a rectangular array of arrays. For instance:
 
 ```javascript
 var data = [
