@@ -305,7 +305,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
 
     betterterrain.prototype.generatemoisture = function(x, y) {
         if (typeof this.dataarray[betterterrainhf.getindex(x, y)].m === "undefined") {
-            
+            var frequency = this.options.freq;
             var moisturefreq = frequency * this.options.moisturefreq;
             var moistureoctave1 = this.terrainnoise.noise2D(x / frequency, y / frequency);
             var moistureoctave2 = 0.5 * this.terrainnoise.noise2D(2 * x / frequency, 2 * y / frequency);
