@@ -1,6 +1,6 @@
 # betterterrain.js
 The better terrain algorithm for javascript. What's the perk? The terrain generates infinitely, yet it is just as detailed as terrain made with midpoint displacement! In addition, it also generates structures, like houses! In addition, entities are supported!
-Uses [@jwagner simplex-noise.js](https://github.com/jwagner/simplex-noise.js/) which is itself based upon Stefan Gustavson's implementation. Works in Node, AMD, and the browser.
+Uses [@jwagner simplex-noise.js](https://github.com/jwagner/simplex-noise.js/) which is itself based upon Stefan Gustavson's implementation. Works in Node, AMD, and the browser. See it in action (here)[http://thegreatrambler.com/code-demos/betterterrain/demo.html] or see my game, which uses this, (here)[http://thegreatrambler.com/games/skillz/index.html].
 
 ![Demo screenshot](screenshotV1.png)
 ![Chunk screenshot](screenshotchunks.png)
