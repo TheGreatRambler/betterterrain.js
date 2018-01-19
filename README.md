@@ -1,5 +1,5 @@
 # betterterrain.js
-The better terrain algorithm for javascript. What's the perk? The terrain generates infinitely, yet it is just as detailed as terrain made with midpoint displacement! In addition, it also generates structures, like houses!
+The better terrain algorithm for javascript. What's the perk? The terrain generates infinitely, yet it is just as detailed as terrain made with midpoint displacement! In addition, it also generates structures, like houses! In additin, entities are supported!
 Uses [@jwagner simplex-noise.js](https://github.com/jwagner/simplex-noise.js/) which is itself based upon Stefan Gustavson's implementation. Works in Node, AMD, and the browser.
 
 ![Demo screenshot](screenshotV1.png)
@@ -44,21 +44,25 @@ options.biomes = {
         name: "plains",
         color: "#c2db55",
         structures: [{
-        	name: "house",
+            name: "house",
             chance: 50
-        }]
+        }],
+	childentities: [{
+	    name: "dog",
+	    chance: 20
+	}]
     },
     J: {
         name: "jungle",
         color: "#45d61d",
         childtiles: [{
-        	name: "P",
+            name: "P",
             chance: 20
         }]
     }
 };
 ```
-Biomes to be used in generation. `Name` and `color` in this example are unneccessary, they are only used for show. `structures` is used to generate structures if you are using them. `childtiles` is used for replacing `chance` percent of tiles of that biome at generation with another. For example, in this case, 20% of jungle tiles will be replaced with `P` (plains) tiles. The biomes object can be removed entirely if all you are using is a `biomemap`. All biome tiles without a `childtiles` or `structures` property are unneccesary. This means both `W` (water) and `D` (desert) can be excluded in this example.
+Biomes to be used in generation. `Name` and `color` in this example are unneccessary, they are only used for show. `structures` is used to generate structures if you are using them. `childtiles` is used for replacing `chance` percent of tiles of that biome at generation with another. For example, in this case, 20% of jungle tiles will be replaced with `P` (plains) tiles. `childentities` are similar to `childtiles`, the entity is just saved to a different part of memory, called `e`. Read about that below. The biomes object can be removed entirely if all you are using is a `biomemap`. All biome tiles without a `childtiles` or `structures` property are unneccesary. This means both `W` (water) and `D` (desert) can be excluded in this example.
 
 #### Seed
 
@@ -189,6 +193,7 @@ console.log(terrain.getdata(x, y));
     b: "J",		    // biome name
     i: "F",	       	    // name of item produced by structure, if applicable
     s: "house"		    // name of structure returned, if applicable
+    e: "dog"                // name of the entity, if applicable
 }
 */
 ```
