@@ -259,9 +259,9 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         if (typeof this.dataarray[betterterrainhf.getindex(x, y)].e === "undefined") {
             var tiledata = this.dataarray[betterterrainhf.getindex(x, y)];
             if (typeof tiledata.b !== "undefined") {
-                if (typeof tiledata.childentities !== "undefined") {
+                if (typeof this.options.biomes[tiledata.b].childentities !== "undefined") {
                     var chancefunc = this.getchancefunc(x, y, 7);
-                    var tile = tiledata.childentities;
+                    var tile = this.options.biomes[tiledata.b].childentities;
                     for (var f = 0; f < tile.length; f++) {
                         var result = tile[f].chance / 100;
                         var boolchoice = chancefunc() <= result;
