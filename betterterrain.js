@@ -254,6 +254,26 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
             }
         }
     };
+    
+    betterterrain.prototype.generateentities = function(x, y) {
+        if (typeof this.dataarray[betterterrainhf.getindex(x, y)].e === "undefined") {
+            var tiledata = this.dataarray[betterterrainhf.getindex(x, y)];
+            if (typeof tiledata.b !== "undefined") {
+                if (typeof tiledata.childentities !== "undefined") {
+                    var chancefunc = this.getchancefunc(x, y, 7);
+                    var tile = tiledata.childtiles;
+                    for (var f = 0; f < tile.length; f++) {
+                        var result = tile[f].chance / 100;
+                        var boolchoice = chancefunc() <= result;
+                        if (boolchoice) {
+                            this.dataarray[betterterrainhf.getindex(x, y)].e = tile[f].name;
+                            break;
+                        }
+                    }
+                }
+            }
+        }
+    };
 
     betterterrain.prototype.generatebiomes = function(x, y) {
         if (typeof this.dataarray[betterterrainhf.getindex(x, y)].b === "undefined") {
@@ -364,6 +384,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
         if (!this.options.onlyheight) {
             this.generatemoisture(x, y);
             this.generatebiomes(x, y);
+            this.generateentities(x, y);
             if (this.options.structuresgen) {
                 this.generatestructures(x, y);
             }
