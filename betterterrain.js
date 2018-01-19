@@ -261,7 +261,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
             if (typeof tiledata.b !== "undefined") {
                 if (typeof tiledata.childentities !== "undefined") {
                     var chancefunc = this.getchancefunc(x, y, 7);
-                    var tile = tiledata.childtiles;
+                    var tile = tiledata.childentities;
                     for (var f = 0; f < tile.length; f++) {
                         var result = tile[f].chance / 100;
                         var boolchoice = chancefunc() <= result;
