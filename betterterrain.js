@@ -200,7 +200,7 @@ c(b);0>a.s2&&(a.s2+=1);c=null}})();
     betterterrain.prototype.generatestructures = function(x, y) {
         if (typeof this.dataarray[betterterrainhf.getindex(x, y)].s === "undefined") {
             var biomedata = this.options.biomes[this.dataarray[betterterrainhf.getindex(x, y)].b];
-            if (typeof biomedata.structures !== "undefined") {
+            if (biomedata &&& typeof biomedata.structures !== "undefined") {
                 var chancefunction = this.getchancefunc(x, y, 2);
                 var choiceitemindex = betterterrainhf.getrandomnumber(0, biomedata.structures.length - 1, chancefunction());
                 var chosenstructure = biomedata.structures[choiceitemindex];
