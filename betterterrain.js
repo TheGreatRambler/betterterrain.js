@@ -7,7 +7,6 @@
  *
  * COPYRIGHT 2018 BY THEGREATRAMBLER
  * MIT LICENSE
- *
  */
 
 (function(root, factory) {
