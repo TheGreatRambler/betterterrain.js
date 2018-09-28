@@ -1,3 +1,5 @@
+package szudzik;
+
 public class Szudzik {
   public static int pair(int xval, int yval) {
     int x, y; // allow for negative and positive
